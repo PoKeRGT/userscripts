@@ -6,14 +6,17 @@
 // @author       You
 // @match        https://www.youtube.com/*
 // @grant        GM_xmlhttpRequest
+// @grant        GM_getValue
 // @connect      www.youtube.com
 // ==/UserScript==
 
 (function () {
   'use strict';
 
-  const MAX_VIDEO_AGE = 15;
-  const OPACITY = 0.25;
+  const MAX_VIDEO_AGE = GM_getValue('maxVideoAge', 15);
+  const OPACITY = GM_getValue('opacity', 0.25);
+  const CATEGORIES_TO_HIDE = GM_getValue('categoriesToHide', ['Music', 'Sports'])
+  const BORDER_COLOR = GM_getValue('borderColor', '#FF0000');
 
   const observer = new MutationObserver(function (mutations) {
     mutations.forEach(function (mutation) {
@@ -23,7 +26,7 @@
           if (videoElement) {
             const videoUrl = getVideoUrlFromElement(videoElement);
             const videoTitle = videoElement.textContent.trim();
-            fetchVideoDetails(videoUrl, videoTitle);
+            fetchVideoDetails(videoUrl, videoTitle, node);
           }
         }
       });
@@ -49,27 +52,41 @@
         url: videoUrl,
         fetch: true,
         onload: function (response) {
+          let hidden = false;
           const metaTags = response.responseText.match(/<meta [^>]*>/g);
           const dateElement = findDateMetaTag(metaTags);
-          if (dateElement && dateElement.content) {
+          const categoryElement = findCategoryMetaTag(metaTags);
+          const videoPath = new URL(videoUrl).pathname + new URL(videoUrl).search
+          if (categoryElement && categoryElement.content && CATEGORIES_TO_HIDE.includes(categoryElement.content)) {
+            hidden = true;
+            const videoElement = document.querySelector(`a[href="${videoPath}"]`);
+            if (videoElement) {
+              const parentElement = videoElement.closest('#content');
+              if (parentElement) {
+                parentElement.style.opacity = OPACITY;
+              }
+            }
+            console.log(`Video "${videoTitle}" is in the category "${categoryElement.content}"`);
+          }
+          if (dateElement && dateElement.content && !hidden) {
             const uploadDate = new Date(dateElement.content);
             const today = new Date();
             const diffInDays = Math.ceil((today - uploadDate) / (1000 * 60 * 60 * 24));
             if (diffInDays > MAX_VIDEO_AGE) {
-              const videoElement = document.querySelector(`a[href="${new URL(videoUrl).pathname + new URL(videoUrl).search}"]`);
+              const videoElement = document.querySelector(`a[href="${videoPath}"]`);
               if (videoElement) {
                 const parentElement = videoElement.closest('#content');
                 if (parentElement) {
                   parentElement.style.opacity = OPACITY;
                 }
-                console.log(`Video "${videoTitle}" is older than ${MAX_VIDEO_AGE} days (${diffInDays} days).`);
               }
+              console.log(`Video "${videoTitle}" is older than ${MAX_VIDEO_AGE} days (${diffInDays} days).`);
             } else {
-              const videoElement = document.querySelector(`a[href="${new URL(videoUrl).pathname + new URL(videoUrl).search}"]`);
+              const videoElement = document.querySelector(`a[href="${videoPath}"]`);
               if (videoElement) {
                 const parentElement = videoElement.closest('#thumbnail');
                 if (parentElement) {
-                  parentElement.style.border = '2px solid red';
+                  parentElement.style.border = `2px solid ${BORDER_COLOR}`;
                   parentElement.style.borderRadius = '5px';
                 }
               }
@@ -92,6 +109,19 @@
     });
     if (dateTag) {
       const contentMatch = dateTag.match(/content="([^"]+)"/);
+      if (contentMatch && contentMatch[1]) {
+        return { content: contentMatch[1] };
+      }
+    }
+    return null;
+  }
+
+  function findCategoryMetaTag(metaTags) {
+    const categoryTag = metaTags.find(tag => {
+      return tag.includes('itemprop="genre"') || tag.includes('itemprop="category"'); // Adjust this based on the actual category meta tag
+    });
+    if (categoryTag) {
+      const contentMatch = categoryTag.match(/content="([^"]+)"/);
       if (contentMatch && contentMatch[1]) {
         return { content: contentMatch[1] };
       }
