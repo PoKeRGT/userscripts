@@ -7,6 +7,7 @@
 // @author       PoKeRGT
 // @match        https://www.youtube.com/watch*
 // @grant        none
+// @license      MIT
 // ==/UserScript==
 
 var videoElement = document.getElementById('movie_player');
