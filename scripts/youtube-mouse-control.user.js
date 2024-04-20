@@ -1,9 +1,9 @@
 // ==UserScript==
 // @name         YouTube Volume and Time Mouse Controlled
 // @namespace    PoKeRGT
-// @version      1.0
-// @icon         https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/svg/youtube.svg
-// @description  Control Youtube volume and time using mouse wheel.
+// @version      1.01
+// @icon         https://www.google.com/s2/favicons?sz=64&domain=youtube.com
+// @description  Volume/Time mouse control for Youtube
 // @author       PoKeRGT
 // @match        https://www.youtube.com/watch*
 // @grant        none
