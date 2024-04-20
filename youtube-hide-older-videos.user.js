@@ -1,9 +1,10 @@
 // ==UserScript==
-// @name         YouTube Video Age Filter
-// @namespace    http://tampermonkey.net/
-// @version      0.5
-// @description  Applies opacity to YouTube videos older than 15 days
-// @author       You
+// @name         YouTube Video Age and Category Filter
+// @namespace    PoKeRGT
+// @version      1.0
+// @icon         https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/svg/youtube.svg
+// @description  Filters old YouTube videos and hides videos in certain categories.
+// @author       PoKeRGT
 // @match        https://www.youtube.com/*
 // @grant        GM_xmlhttpRequest
 // @grant        GM_getValue

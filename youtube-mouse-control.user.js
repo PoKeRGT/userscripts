@@ -1,9 +1,10 @@
 // ==UserScript==
-// @name         YouTube Volume and Time Controller
-// @namespace    http://tampermonkey.net/
-// @version      0.1
-// @description  try to take over the world!
-// @author       You
+// @name         YouTube Volume and Time Mouse Controlled
+// @namespace    PoKeRGT
+// @version      1.0
+// @icon         https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/svg/youtube.svg
+// @description  Control Youtube volume and time using mouse wheel.
+// @author       PoKeRGT
 // @match        https://www.youtube.com/watch*
 // @grant        none
 // ==/UserScript==
