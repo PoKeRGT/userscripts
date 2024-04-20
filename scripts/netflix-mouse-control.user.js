@@ -75,4 +75,4 @@ setTimeout(() => {
     }
     event.preventDefault();
   }, { passive: false });
-}, 1000);
+}, 7000);
