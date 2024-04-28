@@ -23,10 +23,10 @@ Default Values:
       "borderColor": "#FF0000"
     }
 
-maxVideoAge: days
-opacity: 0-1
-categoriesToHide: string list
-borderColor: rgb or color name
+- maxVideoAge: days
+- opacity: 0-1
+- categoriesToHide: string list
+- borderColor: rgb or color name
 
 ## YouTube Mouse Control for Volume and Time
 
