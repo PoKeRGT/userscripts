@@ -30,4 +30,6 @@ This user script allows you to control the volume and time of Netflix videos usi
 
 By scrolling up or down, you can adjust the volume and seek forward or backward in the video.
 
+The left half of the video controls the volume, while the right half controls the time.
+
 The script also ensures that the mouse control is only active when watching a Netflix video, providing a seamless and convenient viewing experience.
