@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         YouTube Video Age and Category Filter
 // @namespace    PoKeRGT
-// @version      1.01
+// @version      1.02
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=youtube.com
 // @description  Filters old YouTube videos and hides videos in certain categories.
 // @author       PoKeRGT

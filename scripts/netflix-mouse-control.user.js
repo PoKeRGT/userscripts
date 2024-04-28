@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Netflix Mouse Control
 // @namespace    PoKeRGT
-// @version      1.01
+// @version      1.02
 // @description  Volume/Time mouse control for Netflix
 // @author       PoKeRGT
 // @match        https://www.netflix.com/watch/*
