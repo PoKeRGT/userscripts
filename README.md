@@ -23,6 +23,11 @@ Default Values:
       "borderColor": "#FF0000"
     }
 
+maxVideoAge: days
+opacity: 0-1
+categoriesToHide: string list
+borderColor: rgb or color name
+
 ## YouTube Mouse Control for Volume and Time
 
 This user script allows you to control the volume and time of a YouTube video using the mouse wheel.
