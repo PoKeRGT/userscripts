@@ -9,6 +9,7 @@
 // @grant        GM_xmlhttpRequest
 // @grant        GM_getValue
 // @connect      www.youtube.com
+// @run-at       document-start
 // @license      MIT
 // ==/UserScript==
 
