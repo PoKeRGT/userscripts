@@ -14,6 +14,15 @@ It also provides visual cues by adjusting the opacity and adding borders to the 
 
 The user can customize the maximum video age, opacity, categories to hide, and border color through the script's settings.
 
+Default Values:
+
+    {
+      "maxVideoAge": 15,
+      "opacity": 0.25,
+      "categoriesToHide": "['Music', 'Sports']",
+      "borderColor": "#FF0000"
+    }
+
 ## YouTube Mouse Control for Volume and Time
 
 This user script allows you to control the volume and time of a YouTube video using the mouse wheel.
