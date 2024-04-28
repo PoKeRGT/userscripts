@@ -10,6 +10,7 @@
 // @grant        GM_getValue
 // @connect      www.youtube.com
 // @run-at       document-start
+// @homepageURL  https://github.com/PoKeRGT/userscripts
 // @license      MIT
 // ==/UserScript==
 

@@ -7,6 +7,7 @@
 // @author       PoKeRGT
 // @match        https://www.youtube.com/watch*
 // @grant        none
+// @homepageURL  https://github.com/PoKeRGT/userscripts
 // @license      MIT
 // ==/UserScript==
 

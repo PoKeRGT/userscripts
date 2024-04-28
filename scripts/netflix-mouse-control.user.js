@@ -8,6 +8,7 @@
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=netflix.com
 // @grant        none
 // @run-at       document-ready
+// @homepageURL  https://github.com/PoKeRGT/userscripts
 // @license      MIT
 // ==/UserScript==
 
