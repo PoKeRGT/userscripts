@@ -47,3 +47,7 @@ By scrolling up or down, you can adjust the volume and seek forward or backward 
 The left half of the video controls the volume, while the right half controls the time.
 
 The script also ensures that the mouse control is only active when watching a Netflix video, providing a seamless and convenient viewing experience.
+
+## TwitchTV autoplay stop
+
+This user script stops autoplay videos on the main page of Twitch.tv
