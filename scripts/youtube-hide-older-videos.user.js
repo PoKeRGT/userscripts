@@ -20,7 +20,8 @@
   const MAX_VIDEO_AGE = GM_getValue('maxVideoAge', 15);
   const OPACITY = GM_getValue('opacity', 0.25);
   const CATEGORIES_TO_HIDE = GM_getValue('categoriesToHide', ['Music', 'Sports'])
-  const BORDER_COLOR = GM_getValue('borderColor', '#FF0000');
+  const NOT_SEEN_BORDER_COLOR = GM_getValue('notSeenBorderColor', '#00FF00');
+  const SEEN_BORDER_COLOR = GM_getValue('seenBorderColor', '#FF0000');
 
   const observer = new MutationObserver(function (mutations) {
     mutations.forEach(function (mutation) {
@@ -28,9 +29,14 @@
         if (node.nodeName === 'YTD-RICH-ITEM-RENDERER') {
           const videoElement = node.querySelector('#video-title');
           if (videoElement) {
-            const videoUrl = getVideoUrlFromElement(videoElement);
-            const videoTitle = videoElement.textContent.trim();
-            fetchVideoDetails(videoUrl, videoTitle, node);
+            const progressBar = node.querySelector('#progress')
+            if (progressBar) {
+              changeElement(progressBar, '#thumbnail', "seen")
+            } else {
+              const videoUrl = getVideoUrlFromElement(videoElement);
+              const videoTitle = videoElement.textContent.trim();
+              fetchVideoDetails(videoUrl, videoTitle, node);
+            }
           }
         }
       });
@@ -49,6 +55,27 @@
     return null;
   }
 
+  function changeElement(element, closest, prop) {
+    const parentElement = element.closest(`div${closest}`);
+    if (parentElement) {
+      switch (prop) {
+        case 'opacity':
+          parentElement.style.opacity = OPACITY;
+          break;
+        case 'not_seen':
+          parentElement.style.border = `5px solid ${NOT_SEEN_BORDER_COLOR}`;
+          parentElement.style.borderRadius = '20px';
+          break;
+        case 'seen':
+          parentElement.style.border = `5px solid ${SEEN_BORDER_COLOR}`;
+          parentElement.style.borderRadius = '20px';
+          break;
+        default:
+          break;
+      }
+    }
+  }
+
   function fetchVideoDetails(videoUrl, videoTitle) {
     if (videoUrl) {
       GM_xmlhttpRequest({
@@ -65,10 +92,7 @@
             hidden = true;
             const videoElement = document.querySelector(`a[href="${videoPath}"]`);
             if (videoElement) {
-              const parentElement = videoElement.closest('#content');
-              if (parentElement) {
-                parentElement.style.opacity = OPACITY;
-              }
+              changeElement(videoElement, '#content', "opacity")
             }
             console.log(`Video "${videoTitle}" is in the category "${categoryElement.content}"`);
           }
@@ -79,20 +103,13 @@
             if (diffInDays > MAX_VIDEO_AGE) {
               const videoElement = document.querySelector(`a[href="${videoPath}"]`);
               if (videoElement) {
-                const parentElement = videoElement.closest('#content');
-                if (parentElement) {
-                  parentElement.style.opacity = OPACITY;
-                }
+                changeElement(videoElement, '#content', "opacity")
               }
               console.log(`Video "${videoTitle}" is older than ${MAX_VIDEO_AGE} days (${diffInDays} days).`);
             } else {
               const videoElement = document.querySelector(`a[href="${videoPath}"]`);
               if (videoElement) {
-                const parentElement = videoElement.closest('#thumbnail');
-                if (parentElement) {
-                  parentElement.style.border = `2px solid ${BORDER_COLOR}`;
-                  parentElement.style.borderRadius = '5px';
-                }
+                changeElement(videoElement, '#thumbnail', "not_seen")
               }
               console.log(`Video "${videoTitle}" is ${diffInDays} days old.`);
             }

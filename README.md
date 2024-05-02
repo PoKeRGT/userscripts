@@ -12,7 +12,7 @@ The script hides videos that are older than a specified age, as well as videos i
 
 It also provides visual cues by adjusting the opacity and adding borders to the videos based on the defined criteria.
 
-The user can customize the maximum video age, opacity, categories to hide, and border color through the script's settings.
+The user can customize the maximum video age, opacity, categories to hide, and border colors through the script's settings.
 
 Default Values:
 
@@ -20,13 +20,14 @@ Default Values:
       "maxVideoAge": 15,
       "opacity": 0.25,
       "categoriesToHide": "['Music', 'Sports']",
-      "borderColor": "#FF0000"
+      "notSeenBorderColor": "#00FF00",
+      "seenBorderColor": "#FF0000",
     }
 
 - maxVideoAge: days
 - opacity: 0-1
 - categoriesToHide: string list
-- borderColor: RGB Hex color code or color name
+- notSeenBorderColor & seenBorderColor: RGB Hex color code or color name
 
 ## YouTube Mouse Control for Volume and Time
 
