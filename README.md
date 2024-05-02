@@ -21,7 +21,7 @@ Default Values:
       "opacity": 0.25,
       "categoriesToHide": "['Music', 'Sports']",
       "notSeenBorderColor": "#00FF00",
-      "seenBorderColor": "#FF0000",
+      "seenBorderColor": "#FF0000"
     }
 
 - maxVideoAge: days
