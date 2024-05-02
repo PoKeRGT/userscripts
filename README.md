@@ -55,3 +55,5 @@ This user script stops autoplay videos on the main page of Twitch.tv
 ## HackerNews Favicons
 
 This script adds favicons to links on the Hacker News website. For each link , it fetches the favicon from Google's favicon service and adds it to the link's title line as an image.
+
+In addition to adding favicons to links, the script also allows users to open links in a new tab by clicking on the favicon.

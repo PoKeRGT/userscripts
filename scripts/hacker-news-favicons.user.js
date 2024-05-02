@@ -21,11 +21,19 @@
     const link = item.querySelector('a');
     const domain = new URL(link.href).hostname;
     const imageUrl = `https://www.google.com/s2/favicons?sz=16&domain_url=${domain}`;
+
     const container = document.createElement('span');
     container.style.paddingRight = '0.25em';
     container.style.paddingLeft = '0.25em';
     item.prepend(container);
-    GM_addElement(container, 'img', {
+
+    const newTabLink = document.createElement('a')
+    newTabLink.href = link.href
+    newTabLink.target = '_blank'
+
+    container.appendChild(newTabLink)
+
+    GM_addElement(newTabLink, 'img', {
       src: imageUrl,
       width: 16,
       height: 16
