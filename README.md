@@ -49,6 +49,10 @@ The left half of the video controls the volume, while the right half controls th
 
 The script also ensures that the mouse control is only active when watching a Netflix video, providing a seamless and convenient viewing experience.
 
+## Netflix seamless play
+
+This user script automates the process of skipping intro and recaps, and jumping to the next video on Netflix.
+
 ## TwitchTV autoplay stop
 
 This user script stops autoplay videos on the main page of Twitch.tv
