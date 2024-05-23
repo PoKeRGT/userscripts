@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Netflix seamless play
 // @namespace    PoKeRGT
-// @version      1.02
+// @version      1.03
 // @description  Skips intro, recaps and jumps to next video automatically
 // @author       PoKeRGT
 // @match        https://www.netflix.com/*
