@@ -4,7 +4,7 @@
 // @version      1.02
 // @description  Skips intro, recaps and jumps to next video automatically
 // @author       PoKeRGT
-// @match        https://www.netflix.com/watch/*
+// @match        https://www.netflix.com/*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=netflix.com
 // @grant        none
 // @run-at       document-ready
