@@ -63,6 +63,6 @@ This script adds favicons to links on the Hacker News website main page. For eac
 
 In addition to adding favicons to links, the script also allows users to open links in a new tab by clicking on the favicon.
 
-## Hackernews links in article
+## HackerNews links in article
 
 This user script adds a "Show Links" button to HackerNews articles, displaying external links as an overlay when clicked. It collects external links, adds anchors to comments, and opens links in new tabs.
