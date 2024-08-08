@@ -36,11 +36,6 @@
     return null;
   }
 
-  const getVideoTag = () => {
-    const videos = document.getElementsByTagName('video');
-    return (videos && videos.length === 1 ? videos[0] : null);
-  }
-
   const moveToPosition = (player, timeMillis) => {
     player.seek(timeMillis);
   }
@@ -49,7 +44,9 @@
     return Math.max(minValue, Math.min(maxValue, n));
   }
 
-  const handleMouseWheelEvent = (player, videoTag, event) => {
+  const handleMouseWheelEvent = (player, event) => {
+    const videos = document.getElementsByTagName('video');
+    const videoTag = (videos && videos.length === 1 ? videos[0] : null);
     const rect = videoTag.getBoundingClientRect();
     const width = videoTag.offsetWidth;
     const height = videoTag.offsetHeight;
@@ -81,13 +78,11 @@
   const init = () => {
     if (location.href.includes('/watch/')) {
       const player = getPlayer();
-      const videoTag = getVideoTag();
-
 
       if (player) {
         if (!window.netflixVolumeMouseControl) {
           console.log('Appending mouse control')
-          document.body.addEventListener('wheel', handleMouseWheelEvent.bind(null, player, videoTag), { passive: false });
+          document.body.addEventListener('wheel', handleMouseWheelEvent.bind(null, player), { passive: false });
           window.netflixVolumeMouseControl = true;
         } else {
           console.log('Event handler already added')
