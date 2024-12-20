@@ -31,7 +31,7 @@ function timeControl(event) {
   console.log(videoElement.getCurrentTime());
 }
 
-document.addEventListener('mousewheel', function (event) {
+document.addEventListener('wheel', function (event) {
   var rect = videoElement.getBoundingClientRect();
   if (event.clientX > rect.left && event.clientX < rect.right &&
     event.clientY > rect.top && event.clientY < rect.bottom) {
