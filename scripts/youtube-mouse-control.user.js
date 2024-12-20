@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         YouTube Volume and Time Mouse Controlled
 // @namespace    PoKeRGT
-// @version      1.02
+// @version      1.03
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=youtube.com
 // @description  Volume/Time mouse control for Youtube
 // @author       PoKeRGT
