@@ -37,6 +37,8 @@ When scrolling up or down, the script adjusts the volume or seeks the video time
 
 The left half of the video controls the volume, while the right half controls the time.
 
+Use the Shift key while scrolling in the right side of the video to go forward/backward by 0.5 secs.
+
 This script provides a convenient way to interact with YouTube videos using the mouse, making it easier to adjust the volume and seek to specific times during playback.
 
 ## Netflix Mouse Control User Script

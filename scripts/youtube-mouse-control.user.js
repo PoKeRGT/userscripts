@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         YouTube Volume and Time Mouse Controlled
 // @namespace    PoKeRGT
-// @version      1.03
+// @version      1.04
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=youtube.com
 // @description  Volume/Time mouse control for Youtube
 // @author       PoKeRGT
@@ -9,6 +9,8 @@
 // @grant        none
 // @homepageURL  https://github.com/PoKeRGT/userscripts
 // @license      MIT
+// @downloadURL https://update.greasyfork.org/scripts/493044/YouTube%20Volume%20and%20Time%20Mouse%20Controlled.user.js
+// @updateURL https://update.greasyfork.org/scripts/493044/YouTube%20Volume%20and%20Time%20Mouse%20Controlled.meta.js
 // ==/UserScript==
 
 var videoElement = document.getElementById('movie_player');
@@ -22,11 +24,16 @@ function volumeControl(event) {
   console.log(videoElement.getVolume());
 }
 
-function timeControl(event) {
+function timeControl(event, shiftKey) {
+  let time_to_seek = 5;
+  if (shiftKey) {
+    time_to_seek = 0.5;
+  }
+
   if (event.deltaY > 0) { // mouse wheel up
-    videoElement.seekToStreamTime(videoElement.getCurrentTime() - 5);
+    videoElement.seekToStreamTime(videoElement.getCurrentTime() - time_to_seek);
   } else { // mouse wheel down
-    videoElement.seekToStreamTime(videoElement.getCurrentTime() + 5);
+    videoElement.seekToStreamTime(videoElement.getCurrentTime() + time_to_seek);
   }
   console.log(videoElement.getCurrentTime());
 }
@@ -40,7 +47,7 @@ document.addEventListener('wheel', function (event) {
       volumeControl(event);
     }
     else { // right half of the screen
-      timeControl(event);
+      timeControl(event, event.shiftKey);
     }
   }
 }, { passive: false });
