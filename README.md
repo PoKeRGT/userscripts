@@ -68,3 +68,7 @@ In addition to adding favicons to links, the script also allows users to open li
 ## HackerNews links in article
 
 This user script adds a "Show Links" button to HackerNews articles, displaying external links as an overlay when clicked. It collects external links, adds anchors to comments, and opens links in new tabs.
+
+## YouTube Remove Inline Shorts
+
+This userscript removes inline YouTube Shorts from your feed. It identifies Shorts by looking for the `ytm-shorts-lockup-view-model-v2` tag and then removes their containing parent element from the page. This helps in decluttering your YouTube browsing experience if you prefer not to see inline Shorts.
