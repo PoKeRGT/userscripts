@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         YouTube Video Age and Category Filter
 // @namespace    PoKeRGT
-// @version      1.03
+// @version      1.12
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=youtube.com
 // @description  Filters old YouTube videos and hides videos in certain categories.
 // @author       PoKeRGT
@@ -17,134 +17,124 @@
 (function () {
   'use strict';
 
+
   const MAX_VIDEO_AGE = GM_getValue('maxVideoAge', 15);
   const OPACITY = GM_getValue('opacity', 0.25);
-  const CATEGORIES_TO_HIDE = GM_getValue('categoriesToHide', ['Music', 'Sports'])
+  const CATEGORIES_TO_HIDE = GM_getValue('categoriesToHide', ['Music', 'Sports']);
   const NOT_SEEN_BORDER_COLOR = GM_getValue('notSeenBorderColor', '#00FF00');
   const SEEN_BORDER_COLOR = GM_getValue('seenBorderColor', '#FF0000');
+
+
+  const processedVideos = new WeakSet();
 
   const observer = new MutationObserver(function (mutations) {
     mutations.forEach(function (mutation) {
       mutation.addedNodes.forEach(function (node) {
-        if (node.nodeName === 'YTD-RICH-ITEM-RENDERER') {
-          const videoElement = node.querySelector('#video-title');
-          if (videoElement) {
-            const progressBar = node.querySelector('#progress')
-            if (progressBar) {
-              changeElement(progressBar, '#thumbnail', "seen")
-            } else {
-              const videoUrl = getVideoUrlFromElement(videoElement);
-              const videoTitle = videoElement.textContent.trim();
-              fetchVideoDetails(videoUrl, videoTitle, node);
-            }
-          }
+        if (node.nodeType === 1 && node.matches('ytd-rich-item-renderer')) {
+          handleVideoItem(node);
         }
       });
     });
   });
 
-  observer.observe(document, { childList: true, subtree: true });
+  observer.observe(document.documentElement, { childList: true, subtree: true });
 
-  function getVideoUrlFromElement(videoElement) {
-    const anchorElement = videoElement.closest('a');
-    if (anchorElement && anchorElement.href) {
-      const baseUrl = 'https://www.youtube.com';
-      const url = new URL(anchorElement.href, baseUrl);
-      return url.href;
+  function handleVideoItem(videoItem) {
+    if (processedVideos.has(videoItem)) {
+      return;
     }
-    return null;
-  }
+    processedVideos.add(videoItem);
 
-  function changeElement(element, closest, prop) {
-    const parentElement = element.closest(`div${closest}`);
-    if (parentElement) {
-      switch (prop) {
-        case 'opacity':
-          parentElement.style.opacity = OPACITY;
-          break;
-        case 'not_seen':
-          parentElement.style.border = `5px solid ${NOT_SEEN_BORDER_COLOR}`;
-          parentElement.style.borderRadius = '20px';
-          break;
-        case 'seen':
-          parentElement.style.border = `5px solid ${SEEN_BORDER_COLOR}`;
-          parentElement.style.borderRadius = '20px';
-          break;
-        default:
-          break;
-      }
+    const thumbnailElement = videoItem.querySelector('yt-thumbnail-view-model');
+    if (!thumbnailElement) return;
+
+    const progressBar = videoItem.querySelector('yt-thumbnail-overlay-progress-bar-view-model');
+    if (progressBar) {
+      changeElementStyle(thumbnailElement, 'seen');
+      return;
+    }
+
+    const videoLink = videoItem.querySelector('a.yt-lockup-metadata-view-model-wiz__title');
+    if (videoLink && videoLink.href) {
+      const videoUrl = new URL(videoLink.href, document.baseURI).href;
+      const videoTitle = videoLink.textContent.trim() || 'Untitled Video';
+      fetchVideoDetails(videoUrl, videoTitle, thumbnailElement);
     }
   }
 
-  function fetchVideoDetails(videoUrl, videoTitle) {
-    if (videoUrl) {
-      GM_xmlhttpRequest({
-        method: 'GET',
-        url: videoUrl,
-        fetch: true,
-        onload: function (response) {
-          let hidden = false;
-          const metaTags = response.responseText.match(/<meta [^>]*>/g);
-          const dateElement = findDateMetaTag(metaTags);
-          const categoryElement = findCategoryMetaTag(metaTags);
-          const videoPath = new URL(videoUrl).pathname + new URL(videoUrl).search
-          if (categoryElement && categoryElement.content && CATEGORIES_TO_HIDE.includes(categoryElement.content)) {
-            hidden = true;
-            const videoElement = document.querySelector(`a[href="${videoPath}"]`);
-            if (videoElement) {
-              changeElement(videoElement, '#content', "opacity")
-            }
-            console.log(`Video "${videoTitle}" is in the category "${categoryElement.content}"`);
-          }
-          if (dateElement && dateElement.content && !hidden) {
-            const uploadDate = new Date(dateElement.content);
+  function changeElementStyle(element, prop) {
+    if (!element) return;
+    element.style.transition = 'all 0.3s ease';
+    element.style.overflow = 'hidden';
+
+    switch (prop) {
+      case 'opacity':
+        element.style.opacity = OPACITY;
+        break;
+      case 'not_seen':
+        element.style.border = `4px solid ${NOT_SEEN_BORDER_COLOR}`;
+        element.style.boxSizing = 'border-box';
+        break;
+      case 'seen':
+        element.style.border = `4px solid ${SEEN_BORDER_COLOR}`;
+        element.style.boxSizing = 'border-box';
+        break;
+      default:
+        break;
+    }
+  }
+
+  function fetchVideoDetails(videoUrl, videoTitle, elementToChange) {
+    GM_xmlhttpRequest({
+      method: 'GET',
+      url: videoUrl,
+      fetch: true,
+      onload: function (response) {
+        if (response.status < 200 || response.status >= 300) {
+          console.error(`Error fetching video details for "${videoTitle}". Status: ${response.status}`);
+          return;
+        }
+
+        const metaTags = response.responseText.match(/<meta [^>]*>/g) || [];
+        let hidden = false;
+
+        const categoryElement = findMetaTagContent(metaTags, ['itemprop="genre"', 'itemprop="category"']);
+        if (categoryElement && CATEGORIES_TO_HIDE.includes(categoryElement)) {
+          hidden = true;
+          changeElementStyle(elementToChange, 'opacity');
+        }
+
+        if (!hidden) {
+          const dateElement = findMetaTagContent(metaTags, ['itemprop="datePublished"', 'itemprop="uploadDate"']);
+          if (dateElement) {
+            const uploadDate = new Date(dateElement);
             const today = new Date();
             const diffInDays = Math.ceil((today - uploadDate) / (1000 * 60 * 60 * 24));
+
             if (diffInDays > MAX_VIDEO_AGE) {
-              const videoElement = document.querySelector(`a[href="${videoPath}"]`);
-              if (videoElement) {
-                changeElement(videoElement, '#content', "opacity")
-              }
-              console.log(`Video "${videoTitle}" is older than ${MAX_VIDEO_AGE} days (${diffInDays} days).`);
+              changeElementStyle(elementToChange, 'opacity');
             } else {
-              const videoElement = document.querySelector(`a[href="${videoPath}"]`);
-              if (videoElement) {
-                changeElement(videoElement, '#thumbnail', "not_seen")
-              }
-              console.log(`Video "${videoTitle}" is ${diffInDays} days old.`);
+              changeElementStyle(elementToChange, 'not_seen');
             }
           } else {
-            console.log('No video upload date found.');
+            changeElementStyle(elementToChange, 'not_seen');
           }
-        },
-        onerror: function (error) {
-          console.error('Error fetching video details:', error);
         }
-      });
-    }
-  }
-
-  function findDateMetaTag(metaTags) {
-    const dateTag = metaTags.find(tag => {
-      return tag.includes('itemprop="datePublished"') || tag.includes('itemprop="dateCreated"') || tag.includes('itemprop="uploadDate"');
-    });
-    if (dateTag) {
-      const contentMatch = dateTag.match(/content="([^"]+)"/);
-      if (contentMatch && contentMatch[1]) {
-        return { content: contentMatch[1] };
+      },
+      onerror: function (error) {
+        console.error(`Error de red al obtener detalles de "${videoTitle}":`, error);
       }
-    }
-    return null;
+    });
   }
 
-  function findCategoryMetaTag(metaTags) {
-    const categoryTag = metaTags.find(tag => {
-      return tag.includes('itemprop="genre"') || tag.includes('itemprop="category"'); // Adjust this based on the actual category meta tag
-    });
-    if (categoryTag) {
-      const contentMatch = categoryTag.match(/content="([^"]+)"/);
-      if (contentMatch && contentMatch[1]) {
-        return { content: contentMatch[1] };
+  function findMetaTagContent(metaTags, properties) {
+    for (const prop of properties) {
+      const tag = metaTags.find(t => t.includes(prop));
+      if (tag) {
+        const contentMatch = tag.match(/content="([^"]+)"/);
+        if (contentMatch && contentMatch[1]) {
+          return contentMatch[1];
+        }
       }
     }
     return null;
