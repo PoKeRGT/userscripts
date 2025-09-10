@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         YouTube Video Age and Category Filter
 // @namespace    PoKeRGT
-// @version      1.26
+// @version      1.27
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=youtube.com
 // @description  Filters old YouTube videos and hides videos in certain categories with a modern blur overlay.
 // @author       PoKeRGT
@@ -133,19 +133,9 @@
 
     const text = document.createElement('span');
     let labelText = reason.value.toUpperCase();
+    // --- MODIFICADO: Añade 'days' al texto si el detalle es por antigüedad ---
     if (reason.details) {
-      // --- MODIFICADO: Formatea la fecha a YYYY/MM/DD ---
-      try {
-        const date = new Date(reason.details);
-        const year = date.getFullYear();
-        const month = String(date.getMonth() + 1).padStart(2, '0'); // Meses son 0-indexados
-        const day = String(date.getDate()).padStart(2, '0');
-        labelText += ` (${year}/${month}/${day})`;
-      } catch (e) {
-        logDebug('Error parsing date for display:', reason.details, e);
-        labelText += ` (Invalid Date)`; // Fallback si hay error al parsear
-      }
-      // --- Fin de la modificación ---
+      labelText += ` (${reason.details} days)`;
     }
     text.textContent = labelText;
 
@@ -221,7 +211,8 @@
             const diffInDays = Math.ceil((today - uploadDate) / (1000 * 60 * 60 * 24));
             if (diffInDays > MAX_VIDEO_AGE) {
               logDebug(`Hiding "${videoTitle}" (Age: ${diffInDays} days)`);
-              changeElementStyle(elementToChange, 'hidden_by_age', uploadDateStr);
+              // --- MODIFICADO: Se pasa diffInDays en lugar de la fecha completa ---
+              changeElementStyle(elementToChange, 'hidden_by_age', diffInDays);
             } else {
               changeElementStyle(elementToChange, 'not_seen');
             }
