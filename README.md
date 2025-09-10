@@ -4,30 +4,55 @@ Violentmonkey userscripts
 
 ## YouTube Video Age and Category Filter
 
-This user script allows you to filter out old YouTube videos and hide videos in certain categories.
+A powerful userscript that enhances your YouTube browsing experience by automatically hiding old or unwanted videos with a sleek, modern interface.
 
-It fetches video details such as upload date and category, and then applies filters based on user-defined preferences.
+Instead of just making videos disappear, this script applies a stylish "frosted glass" blur effect over filtered thumbnails, with a clear badge indicating _why_ the video was hidden. It also provides distinct borders to track your watch status at a glance.
 
-The script hides videos that are older than a specified age, as well as videos in specific categories.
+### Features
 
-It also provides visual cues by adjusting the opacity and adding borders to the videos based on the defined criteria.
+- **Modern "Frosted Glass" Overlay:** Hides unwanted videos using an elegant blur effect, keeping your feed clean without being jarring.
+- **Informative Badges:** Each hidden video displays a clear badge in the corner, so you always know why it was filtered.
+  - Filtered by age: **OLD (365 days)**
+  - Filtered by category: **MUSIC**
+- **Clear Visual Indicators for Watched Status:** Uses colored borders to track video progress:
+  - **Green Border:** New video, not filtered, and completely unwatched.
+  - **Purple Border:** Video is partially watched.
+  - **Red Border:** Video has been fully watched.
+- **Clickable Overlays:** Hidden videos can still be opened with a single click on the overlay, which also prevents the annoying hover-to-play feature on thumbnails.
+- **Highly Customizable:** Easily tweak settings like video age, categories, colors, and the blur intensity directly from the Violentmonkey dashboard.
+- **Future-Proof Updates:** The script is designed to safely add new configuration options in future updates without overwriting your existing settings.
 
-The user can customize the maximum video age, opacity, categories to hide, and border colors through the script's settings.
+### Customization
 
-Default Values:
+You can customize the script's behavior by editing its values in the Violentmonkey dashboard's "Values" tab for this script.
 
-    {
-      "maxVideoAge": 15,
-      "opacity": 0.25,
-      "categoriesToHide": "['Music', 'Sports']",
-      "notSeenBorderColor": "#00FF00",
-      "seenBorderColor": "#FF0000"
-    }
+#### Default Configuration:
 
-- maxVideoAge: days
-- opacity: 0-1
-- categoriesToHide: string list
-- notSeenBorderColor & seenBorderColor: RGB Hex color code or color name
+```json
+{
+  "maxVideoAge": 15,
+  "categoriesToHide": ["Music", "Sports"],
+  "notSeenBorderColor": "#00FF00",
+  "seenBorderColor": "#FF0000",
+  "partiallySeenBorderColor": "#8A2BE2",
+  "overlayBlurAmount": 8,
+  "iconUrlByAge": "https://upload.wikimedia.org/wikipedia/commons/e/e1/Calendar_%2889059%29_-_The_Noun_Project.svg",
+  "iconUrlByCategory": "https://upload.wikimedia.org/wikipedia/commons/4/4b/Discrete_category.svg",
+  "debug": false
+}
+```
+
+#### Parameter Descriptions:
+
+- **maxVideoAge**: (Number) The maximum age of a video in days. Videos older than this will be hidden.
+- **categoriesToHide**: (Array of Strings) A list of YouTube categories to hide. Any video matching a category in this list will be hidden.
+- **notSeenBorderColor**: (String) Hex color code for new, unwatched videos.
+- **seenBorderColor**: (String) Hex color code for fully watched videos.
+- **partiallySeenBorderColor**: (String) Hex color code for partially watched videos.
+- **overlayBlurAmount**: (Number) The intensity of the blur effect in pixels for hidden videos. `0` means no blur.
+- **iconUrlByAge**: (String) The URL for the icon displayed on videos hidden due to their age.
+- **iconUrlByCategory**: (String) The URL for the icon displayed on videos hidden due to their category.
+- **debug**: (Boolean) Set to `true` to print detailed logs to the browser's Developer Console for troubleshooting.
 
 ## YouTube Mouse Control for Volume and Time
 
