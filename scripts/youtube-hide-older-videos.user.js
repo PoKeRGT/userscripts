@@ -49,6 +49,16 @@
   const ICON_URL_BY_CATEGORY = GM_getValue('iconUrlByCategory');
   const OVERLAY_BLUR_AMOUNT = GM_getValue('overlayBlurAmount');
 
+  // --- Selectores CSS ---
+  const SELECTORS = {
+    VIDEO_ITEM_RENDERER: 'ytd-rich-item-renderer',
+    THUMBNAIL_VIEW_MODEL: 'yt-thumbnail-view-model',
+    PROGRESS_BAR_CONTAINER: 'yt-thumbnail-overlay-progress-bar-view-model',
+    PROGRESS_BAR: '.ytThumbnailOverlayProgressBarHostWatchedProgressBarSegment',
+    VIDEO_TITLE_LINK: 'a.ytLockupMetadataViewModelTitle',
+    BLUR_OVERLAY: '.filter-blur-overlay'
+  };
+
   function logDebug(...args) { if (DEBUG) console.log('[YT Filter DEBUG]', ...args); }
 
   logDebug('Script loaded. Initializing...');
@@ -59,7 +69,7 @@
     for (const mutation of mutations) {
       for (const node of mutation.addedNodes) {
         if (node.nodeType === 1) {
-          const item = node.matches('ytd-rich-item-renderer') ? node : node.querySelector('ytd-rich-item-renderer');
+          const item = node.matches(SELECTORS.VIDEO_ITEM_RENDERER) ? node : node.querySelector(SELECTORS.VIDEO_ITEM_RENDERER);
           if (item) handleVideoItem(item);
         }
       }
@@ -73,19 +83,19 @@
     if (processedVideos.has(videoItem)) { return; }
     processedVideos.add(videoItem);
 
-    const thumbnailElement = videoItem.querySelector('yt-thumbnail-view-model');
+    const thumbnailElement = videoItem.querySelector(SELECTORS.THUMBNAIL_VIEW_MODEL);
     if (!thumbnailElement) { return; }
 
-    const progressBarContainer = videoItem.querySelector('yt-thumbnail-overlay-progress-bar-view-model');
+    const progressBarContainer = videoItem.querySelector(SELECTORS.PROGRESS_BAR_CONTAINER);
     if (progressBarContainer) {
-      const progressBar = progressBarContainer.querySelector('.ytThumbnailOverlayProgressBarHostWatchedProgressBarSegment');
+      const progressBar = progressBarContainer.querySelector(SELECTORS.PROGRESS_BAR);
       const progressWidth = progressBar ? parseFloat(progressBar.style.width) : 0;
       if (progressWidth >= 95) changeElementStyle(thumbnailElement, 'seen');
       else if (progressWidth > 0) changeElementStyle(thumbnailElement, 'partially_seen');
       return;
     }
 
-    const videoLinkElement = videoItem.querySelector('a.yt-lockup-metadata-view-model__title');
+    const videoLinkElement = videoItem.querySelector(SELECTORS.VIDEO_TITLE_LINK);
     if (videoLinkElement && videoLinkElement.href) {
       const videoUrl = new URL(videoLinkElement.href, document.baseURI).href;
       const videoTitle = videoLinkElement.textContent.trim() || videoLinkElement.getAttribute('aria-label') || 'Untitled Video';
@@ -99,7 +109,7 @@
    * @param {object} reason Objeto con los detalles del ocultamiento.
    */
   function createBlurOverlay(thumbnailEl, reason) {
-    if (thumbnailEl.querySelector('.filter-blur-overlay')) return;
+    if (thumbnailEl.querySelector(SELECTORS.BLUR_OVERLAY)) return;
 
     const overlayContainer = document.createElement('div');
     overlayContainer.className = 'filter-blur-overlay';
@@ -147,8 +157,8 @@
     overlayContainer.onclick = (e) => {
       e.preventDefault();
       e.stopPropagation();
-      const videoItem = thumbnailEl.closest('ytd-rich-item-renderer');
-      const videoLink = videoItem.querySelector('a.yt-lockup-metadata-view-model__title');
+      const videoItem = thumbnailEl.closest(SELECTORS.VIDEO_ITEM_RENDERER);
+      const videoLink = videoItem.querySelector(SELECTORS.VIDEO_TITLE_LINK);
       if (videoLink) window.location.href = videoLink.href;
     };
 
